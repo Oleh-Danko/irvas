@@ -17836,6 +17836,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _modules_forms__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./modules/forms */ "./src/js/modules/forms.js");
 /* harmony import */ var _modules_changeModalStte__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./modules/changeModalStte */ "./src/js/modules/changeModalStte.js");
 /* harmony import */ var _modules_timer__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./modules/timer */ "./src/js/modules/timer.js");
+/* harmony import */ var _modules_images__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./modules/images */ "./src/js/modules/images.js");
+
 
 
 
@@ -17854,6 +17856,7 @@ window.addEventListener('DOMContentLoaded', function () {
   Object(_modules_tabs__WEBPACK_IMPORTED_MODULE_2__["default"])('.balcon_icons', '.balcon_icons_img', '.big_img > img', 'do_image_more', 'inline-block');
   Object(_modules_forms__WEBPACK_IMPORTED_MODULE_3__["default"])(modalState);
   Object(_modules_timer__WEBPACK_IMPORTED_MODULE_5__["default"])('.timer1', deadline);
+  Object(_modules_images__WEBPACK_IMPORTED_MODULE_6__["default"])();
 });
 
 /***/ }),
@@ -18075,6 +18078,48 @@ var forms = function forms(state) {
 
 /***/ }),
 
+/***/ "./src/js/modules/images.js":
+/*!**********************************!*\
+  !*** ./src/js/modules/images.js ***!
+  \**********************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+var images = function images() {
+  var imgPopup = document.createElement('div'),
+      workSection = document.querySelector('.works'),
+      bigImage = document.createElement('img');
+  imgPopup.classList.add('popup');
+  workSection.appendChild(imgPopup);
+  imgPopup.style.alignContent = 'center';
+  imgPopup.style.justifyContent = 'center';
+  imgPopup.style.display = 'none';
+  imgPopup.appendChild(bigImage);
+  workSection.addEventListener('click', function (e) {
+    e.preventDefault();
+    var target = e.target;
+
+    if (target && target.classList.contains('preview')) {
+      imgPopup.style.display = 'flex';
+      var path = target.parentNode.getAttribute('href');
+      bigImage.setAttribute('src', path);
+      bigImage.style.margin = '3rem';
+      document.body.style.overflow = 'hidden';
+    }
+
+    if (target && target.matches('div.popup')) {
+      imgPopup.style.display = 'none';
+      document.body.style.overflow = '';
+    }
+  });
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (images);
+
+/***/ }),
+
 /***/ "./src/js/modules/modals.js":
 /*!**********************************!*\
   !*** ./src/js/modules/modals.js ***!
@@ -18094,28 +18139,8 @@ var modals = function modals(state) {
     var trigger = document.querySelectorAll(triggerSelector),
         modal = document.querySelector(modalSelector),
         close = document.querySelector(closeSelector),
-        windows = document.querySelectorAll('[data-modal]');
-
-    function openModal() {
-      windows.forEach(function (item) {
-        item.style.display = 'none';
-      });
-      modal.style.display = 'block';
-      document.body.style.overflow = 'hidden';
-    }
-
-    function createStatusMessage(selector) {
-      // document.querySelector('.popup_calc_content ').style.border = '12px solid red';
-      // item.style.border = '3px solid red';
-      var statusMessage = document.createElement('div');
-      statusMessage.classList.add('status');
-      statusMessage.textContent = 'Введіть всі данні';
-      document.querySelector(selector).after(statusMessage);
-      setTimeout(function () {
-        statusMessage.textContent = '';
-      }, 1000);
-    }
-
+        windows = document.querySelectorAll('[data-modal]'),
+        scroll = calcScroll();
     trigger.forEach(function (item) {
       item.addEventListener('click', function (e) {
         if (e.target) {
@@ -18140,12 +18165,34 @@ var modals = function modals(state) {
       });
     });
 
+    function openModal() {
+      windows.forEach(function (item) {
+        item.style.display = 'none';
+      });
+      modal.style.display = 'block';
+      document.body.style.overflow = 'hidden';
+      document.body.style.marginRight = "".concat(scroll, "px");
+    }
+
     function closeModal() {
       windows.forEach(function (item) {
         item.style.display = 'none';
       });
       modal.style.display = 'none';
       document.body.style.overflow = '';
+      document.body.style.marginRight = "0px";
+    }
+
+    function createStatusMessage(selector) {
+      // document.querySelector('.popup_calc_content ').style.border = '12px solid red';
+      // item.style.border = '3px solid red';
+      var statusMessage = document.createElement('div');
+      statusMessage.classList.add('status');
+      statusMessage.textContent = 'Введіть всі данні';
+      document.querySelector(selector).after(statusMessage);
+      setTimeout(function () {
+        statusMessage.textContent = '';
+      }, 1000);
     }
 
     close.addEventListener('click', function () {
@@ -18163,6 +18210,18 @@ var modals = function modals(state) {
       document.querySelector(selector).style.display = 'block';
       document.body.style.overflow = 'hidden';
     }, time);
+  }
+
+  function calcScroll() {
+    var div = document.createElement('div');
+    div.style.width = "50px";
+    div.style.height = "50px";
+    div.style.overflowY = 'scroll';
+    div.style.visibility = 'hidden';
+    document.body.appendChild(div);
+    var scrollWidth = div.offsetWidth - div.clientWidth;
+    div.remove();
+    return scrollWidth;
   }
 
   bindModal('.popup_engineer_btn', '.popup_engineer', '.popup_engineer .popup_close');
